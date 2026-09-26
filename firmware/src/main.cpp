@@ -5,7 +5,8 @@
 // Typical demodulating IR receiver output is connected to GPIO4.
 constexpr int IR_RX_GPIO = 4;
 constexpr uint32_t RMT_TICK_HZ = 1'000'000; // 1 tick = 1 us
-constexpr uint8_t RMT_BLOCKS = RMT_MEM_NUM_BLOCKS_2;
+// Keep the exact enum type expected by Arduino-ESP32 3.x rmtInit().
+constexpr rmt_reserve_memsize_t RMT_BLOCKS = RMT_MEM_NUM_BLOCKS_2;
 constexpr size_t MAX_SYMBOLS = RMT_BLOCKS * RMT_SYMBOLS_PER_CHANNEL_BLOCK;
 constexpr uint16_t RX_MIN_PULSE_US = 80;
 constexpr uint16_t RX_IDLE_US = 15'000;
@@ -38,7 +39,7 @@ void printCapture(const rmt_data_t* data, size_t symbols) {
     const rmt_data_t& s = data[i];
 
     if (s.duration0 > 0) {
-      JsonObject pulse = rawPulses.add<JsonObject>();
+      JsonObject pulse = rawPulses.createNestedObject();
       pulse["level"] = static_cast<uint8_t>(s.level0);
       pulse["duration_us"] = s.duration0;
       rawUs.add(s.duration0);
@@ -46,7 +47,7 @@ void printCapture(const rmt_data_t* data, size_t symbols) {
     }
 
     if (s.duration1 > 0) {
-      JsonObject pulse = rawPulses.add<JsonObject>();
+      JsonObject pulse = rawPulses.createNestedObject();
       pulse["level"] = static_cast<uint8_t>(s.level1);
       pulse["duration_us"] = s.duration1;
       rawUs.add(s.duration1);
