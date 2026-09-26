@@ -1,0 +1,9 @@
+.pio/
+build/
+dist/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.env
+.env.*
